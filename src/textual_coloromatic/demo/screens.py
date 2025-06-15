@@ -1,5 +1,6 @@
 """
-balh
+screens.py
+This module defines the ColorScreen and HelpScreen classes
 """
 
 # ~ Type Checking (Pyright and MyPy) - Strict Mode
@@ -16,7 +17,7 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Container, VerticalScroll
 from textual.binding import Binding
 from textual.screen import ModalScreen
-from textual.color import Color 
+from textual.color import Color
 from textual.widgets import (
     Static,
     Input,
@@ -31,6 +32,7 @@ from textual_coloromatic.demo.custom_listview import CustomListView
 from textual_coloromatic.demo.datawidget import ActiveColors
 from textual_coloromatic.demo.validators import ColorValidator
 from textual_coloromatic.demo.custom_listview import Selected
+
 
 class ColorScreen(ModalScreen[bool]):
 
@@ -114,7 +116,7 @@ class HelpScreen(ModalScreen[None]):
 
     def compose(self) -> ComposeResult:
 
-        with resources.open_text("textual_pyfiglet", "help.md") as f:
+        with resources.open_text("textual_coloromatic", "help.md") as f:
             self.help = f.read()
 
         with VerticalScroll(id="help_container"):

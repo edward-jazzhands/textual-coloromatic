@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from textual.validation import Validator, ValidationResult #, Number
+from textual.validation import Validator, ValidationResult  # , Number
 from textual.color import Color, ColorParseError
 
 

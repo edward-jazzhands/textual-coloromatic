@@ -1,7 +1,7 @@
 [project]
 name = "textual-coloromatic"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.1.1"
+description = "A Textual widget for display ASCII art with color effects and animations."
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
@@ -22,6 +22,10 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
 ]
+
+[project.urls]
+Repository = "https://github.com/edward-jazzhands/textual-coloromatic"
+Changelog = "https://github.com/edward-jazzhands/textual-coloromatic/blob/master/Changelog.md"
 
 
 [dependency-groups]

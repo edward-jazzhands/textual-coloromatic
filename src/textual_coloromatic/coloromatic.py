@@ -8,13 +8,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from pathlib import Path
+
 if TYPE_CHECKING:
     # from textual.visual import VisualType
     from textual import events
     from textual.geometry import Size, Region
 
 from typing import cast
-from typing_extensions import Literal #, get_args
+from typing_extensions import Literal  # , get_args
 from collections import deque
 from copy import deepcopy
 
@@ -42,7 +43,6 @@ ANIMATION_TYPE = Literal["gradient", "smooth_strobe", "fast_strobe"]
 class Coloromatic(Static):
 
     DEFAULT_CSS = "Coloromatic {width: auto; height: auto;}"
-
 
     ############################
     # ~ Public API Reactives ~ #
@@ -113,12 +113,12 @@ class Coloromatic(Static):
         """Message sent when the Coloromatic is updated."""
 
         def __init__(
-                self,
-                widget: Coloromatic,
-                *,
-                color_mode: COLOR_MODE | None = None,
-                animated: bool | None = None,
-            ) -> None:
+            self,
+            widget: Coloromatic,
+            *,
+            color_mode: COLOR_MODE | None = None,
+            animated: bool | None = None,
+        ) -> None:
             super().__init__()
 
             self.widget = widget
@@ -151,7 +151,7 @@ class Coloromatic(Static):
         Yar
 
         Args:
-            content: string to render 
+            content: string to render
             colors: List of colors to use for the gradient. This is a list of strings that can be
                 parsed by a Textual `Color` object that allows passing in any number of colors you want.
                 It also supports passing in Textual CSS variables ($primary, $secondary, $accent, etc).
@@ -241,7 +241,6 @@ class Coloromatic(Static):
     # ~ Public API ~#
     #################
 
-
     def update_from_path(self, path: Path) -> None:
 
         extracted_art = ArtLoader.extract_art_at_path(path)
@@ -274,7 +273,6 @@ class Coloromatic(Static):
         The widget will update with the new animated state automatically."""
 
         self.animated = not self.animated
-
 
     #################
     # ~ Validators ~#
@@ -355,8 +353,8 @@ class Coloromatic(Static):
 
     def watch_list_input(self, list_in: list[str]) -> None:
 
-            self._animation_lines = self.special_list_stripper(list_in)
-            self.mutate_reactive(Coloromatic._animation_lines)          
+        self._animation_lines = self.special_list_stripper(list_in)
+        self.mutate_reactive(Coloromatic._animation_lines)
 
     def watch__color_mode(self, color_mode: COLOR_MODE) -> None:
 
@@ -540,7 +538,7 @@ class Coloromatic(Static):
             self._initialized = True
             self.call_after_refresh(lambda: setattr(self, "animated", self.animated))
 
-        if self.animation_type == "gradient":   # make it recalculate the gradient when size changes.
+        if self.animation_type == "gradient":  # make it recalculate the gradient when size changes.
             self._color_mode = self._color_mode
 
     # These two functions below are the secret sauce to making the auto sizing work.
@@ -579,7 +577,6 @@ class Coloromatic(Static):
 
         # if the figlet output is blank, return 1 empty string
         return [""] if lines_cleaned == [] else lines_cleaned
-
 
     def render_lines(self, crop: Region) -> list[Strip]:
         if self._gradient and self.animated:

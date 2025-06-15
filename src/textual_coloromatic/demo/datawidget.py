@@ -103,6 +103,5 @@ class ListDataWidget(Widget, Generic[T]):
         return self.items.copy()
 
 
-
 class ActiveColors(ListDataWidget[tuple[str, Color]]):
     pass

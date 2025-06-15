@@ -32,7 +32,6 @@ from textual_coloromatic.demo.screens import HelpScreen
 from textual_coloromatic.art_loader import ArtLoader
 
 
-
 class BottomBar(Horizontal):
 
     def __init__(self, coloromatic: Coloromatic):
@@ -48,7 +47,7 @@ class BottomBar(Horizontal):
             self.art_selections.append((display_name, path))
 
     def compose(self) -> ComposeResult:
-        
+
         yield Select(self.art_selections, id="art_select", allow_blank=True)
         yield Button("Random Art", id="randomize_button")
 
@@ -69,6 +68,7 @@ class BottomBar(Horizontal):
         if isinstance(event.value, Path):
             self.coloromatic.update_from_path(event.value)
 
+
 class ColoromaticDemo(App[Any]):
 
     BINDINGS = [
@@ -78,7 +78,6 @@ class ColoromaticDemo(App[Any]):
 
     CSS_PATH = "styles.tcss"
     TITLE = "Textual-Color-O-Matic Demo"
-
 
     def compose(self) -> ComposeResult:
 
@@ -101,7 +100,6 @@ class ColoromaticDemo(App[Any]):
             yield self.size_display_bar
             yield self.bottom_bar
         yield Footer()
-
 
     @on(Coloromatic.Updated)
     def coloromatic_updated(self, event: Coloromatic.Updated) -> None:
@@ -147,7 +145,6 @@ def run_demo() -> None:
     app = ColoromaticDemo()
     app.run()
 
-    
+
 if __name__ == "__main__":
     run_demo()
-    

@@ -1,8 +1,9 @@
-"""artlist_gen.py"""
+"""art_loader.py"""
 
 # Python imports
 from __future__ import annotations
 from pathlib import Path
+
 # from textual.widget import Widget
 import textual_coloromatic.art
 
@@ -18,7 +19,7 @@ class ArtLoader:
         """
         super().__init__()
         self.display = False
-        self.directories: list[Path] = []        
+        self.directories: list[Path] = []
 
         try:
             pkg_path: list[str] = getattr(textual_coloromatic.art, "__path__")
@@ -36,13 +37,11 @@ class ArtLoader:
         if directories:
             self.directories.extend(directories)
 
-
     def load_art_file_list(self) -> list[Path]:
         """
         Scan all art directories for .txt files and return a list of their paths.
         """
         accepted_extensions = {".txt", ".md", ".art"}
-
 
         art_files: list[Path] = []
         for directory in self.directories:
@@ -56,7 +55,7 @@ class ArtLoader:
             raise FileNotFoundError("No art files found in the specified directories.")
 
         return art_files
-    
+
     @staticmethod
     def extract_art_at_path(path: Path) -> list[str]:
         """
@@ -71,7 +70,7 @@ class ArtLoader:
 
         if not path.exists() or not path.is_file():
             raise FileNotFoundError(f"File not found: {path}")
-        
+
         try:
             with path.open(encoding="utf-8") as file:
                 art_content = file.read()
@@ -79,7 +78,7 @@ class ArtLoader:
             raise IOError(f"Error reading file {path}: {e}")
         if not art_content.strip():
             raise ValueError(f"File {path} is empty or contains only whitespace.")
-        
+
         # we need to remove the header metadata from the art content
         # if the file has any, which is usually the case.
         # The header metadata is separated by a line with only dashes.
@@ -97,6 +96,3 @@ class ArtLoader:
             raise ValueError(f"File {path} has no content after header.")
 
         return new_list
-
-
-

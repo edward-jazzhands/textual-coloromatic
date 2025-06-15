@@ -5,13 +5,14 @@
 # ~ Formatting - Black - max 110 characters / line
 
 from __future__ import annotations
+
 # import random
 # from pathlib import Path
 
 # Textual imports
-from textual import on #, log
+from textual import on  # , log
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Container, VerticalScroll 
+from textual.containers import Horizontal, Container, VerticalScroll
 from textual.widget import Widget
 from textual.widgets import (
     Static,
@@ -30,6 +31,7 @@ from textual.widgets import (
 from textual_coloromatic import Coloromatic
 from textual_coloromatic.demo.validators import QualityValidator, FPSValidator
 from textual_coloromatic.demo.screens import ColorScreen
+
 # from textual_coloromatic.art_loader import ArtLoader
 
 
@@ -72,6 +74,7 @@ class SettingBox(Container):
                     yield Static(self.label, classes="setting_label")
             self.add_class("setting_under")
 
+
 class SettingsWidget(VerticalScroll):
 
     justifications = [
@@ -95,7 +98,6 @@ class SettingsWidget(VerticalScroll):
     def __init__(self, coloromatic: Coloromatic):
         super().__init__()
         self.coloromatic = coloromatic
-
 
     def compose(self) -> ComposeResult:
 
@@ -126,7 +128,6 @@ class SettingsWidget(VerticalScroll):
         yield SettingBox(self.reverse_switch, "Reverse\nanimation", widget_width=10)
         yield SettingBox(self.gradient_quality, "Gradient\nquality*", widget_width=12)
         yield SettingBox(self.animation_fps, "Animation\nFPS*", widget_width=12)
-
 
     @on(Button.Pressed, "#color_list_button")
     async def color_list_button_pressed(self) -> None:
