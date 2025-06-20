@@ -29,7 +29,7 @@ from textual.widgets import (
 # Local imports
 # from textual_coloromatic.datawidget import ListDataWidget
 from textual_coloromatic import Coloromatic
-from textual_coloromatic.demo.validators import QualityValidator, FPSValidator
+from textual_coloromatic.demo.validators import QualityValidator, FPSValidator, SizeValidator
 from textual_coloromatic.demo.screens import ColorScreen
 
 # from textual_coloromatic.art_loader import ArtLoader
@@ -101,13 +101,16 @@ class SettingsWidget(VerticalScroll):
 
     def compose(self) -> ComposeResult:
 
+        self.tiling = Switch(id="tiling_switch")
+        self.width_input = Input(id="width_input", validators=[SizeValidator()], max_length=5)
+        self.height_input = Input(id="height_input", validators=[SizeValidator()], max_length=5)
         self.color_popup_button = Button("Enter Colors", id="color_list_button")
         self.animation_select = Select(
             self.animations, value="gradient", id="animation_select", allow_blank=False
         )
-        self.animate_switch = Switch(id="animate_switch", value=False)
-        self.horizontal_switch = Switch(id="horizontal_switch", value=False)
-        self.reverse_switch = Switch(id="reverse_switch", value=False)
+        self.animate_switch = Switch(id="animate_switch")
+        self.horizontal_switch = Switch(id="horizontal_switch")
+        self.reverse_switch = Switch(id="reverse_switch")
         self.gradient_quality = Input(
             id="gradient_quality",
             max_length=3,
@@ -121,6 +124,9 @@ class SettingsWidget(VerticalScroll):
 
         yield Static("Settings", id="settings_title")
         yield Static("*=details in help (F1)", id="help_label")
+        yield SettingBox(self.tiling, "Tiling", widget_width=10)
+        yield SettingBox(self.width_input, "Width*", widget_width=12)
+        yield SettingBox(self.height_input, "Height*", widget_width=12)        
         yield SettingBox(self.color_popup_button, "*")
         yield SettingBox(self.animation_select, "Animation Type*", widget_width=22, label_position="under")
         yield SettingBox(self.animate_switch, "Animate", widget_width=10)
@@ -128,6 +134,60 @@ class SettingsWidget(VerticalScroll):
         yield SettingBox(self.reverse_switch, "Reverse\nanimation", widget_width=10)
         yield SettingBox(self.gradient_quality, "Gradient\nquality*", widget_width=12)
         yield SettingBox(self.animation_fps, "Animation\nFPS*", widget_width=12)
+
+    @on(Switch.Changed, selector="#tiling_switch")
+    def tiling_switch_toggled(self, event: Switch.Changed) -> None:
+
+        self.coloromatic.repeat = event.value
+
+    @on(Input.Submitted, selector="#width_input")
+    def width_input_set(self, event: Input.Submitted) -> None:
+
+        if event.validation_result:
+            if event.validation_result.is_valid:
+                width = self.width_input.value if self.width_input.value != "" else "auto"
+                height = self.height_input.value if self.height_input.value != "" else "auto"
+                self.log(f"Setting container size to: ({width} x {height})")
+
+                if width == "auto":
+                    self.coloromatic.styles.width = width
+                    self.log(f"Width set to: {self.coloromatic.styles.width}")
+                else:
+                    try:
+                        self.coloromatic.styles.width = int(width)
+                        self.log(f"Width set to integer: {self.coloromatic.styles.width}")
+                    except ValueError:
+                        self.coloromatic.styles.width = width
+                        self.log(f"Width set to: {self.coloromatic.styles.width}")
+            else:
+                failures = event.validation_result.failure_descriptions
+                self.log(f"Invalid width: {failures}")
+                self.notify(f"Invalid width: {failures}", markup=False)
+
+    @on(Input.Submitted, selector="#height_input")
+    def height_input_set(self, event: Input.Submitted) -> None:
+
+        if event.validation_result:
+            if event.validation_result.is_valid:
+                width = self.width_input.value if self.width_input.value != "" else "auto"
+                height = self.height_input.value if self.height_input.value != "" else "auto"
+                self.log(f"Setting container size to: ({width} x {height})")
+
+                if height == "auto":
+                    self.coloromatic.styles.height = height
+                    self.log(f"Height set to: {self.coloromatic.styles.height}")
+                else:
+                    try:
+                        self.coloromatic.styles.height = int(height)
+                        self.log(f"Height set to integer: {self.coloromatic.styles.height}")
+                    except ValueError:
+                        self.coloromatic.styles.height = height
+                        self.log(f"Height set to: {self.coloromatic.styles.height}")
+            else:
+                failures = event.validation_result.failure_descriptions
+                self.log(f"Invalid height: {failures}")
+                self.notify(f"Invalid height: {failures}", markup=False)
+
 
     @on(Button.Pressed, "#color_list_button")
     async def color_list_button_pressed(self) -> None:

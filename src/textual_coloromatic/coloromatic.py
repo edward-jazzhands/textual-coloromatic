@@ -12,7 +12,7 @@ from pathlib import Path
 if TYPE_CHECKING:
     # from textual.visual import VisualType
     from textual import events
-    from textual.geometry import Size, Region
+    from textual.geometry import Size #, Region
 
 from typing import cast
 from typing_extensions import Literal  # , get_args
@@ -22,10 +22,10 @@ from copy import deepcopy
 # Textual and Rich imports
 from textual.theme import Theme
 from textual.color import Gradient, Color
-from textual.css.scalar import Scalar
+# from textual.css.scalar import Scalar
 from textual.message import Message
 from textual.strip import Strip
-from textual.widget import Widget
+# from textual.widget import Widget
 from textual.widgets import Static
 from textual.reactive import reactive
 from textual.timer import Timer
@@ -34,6 +34,8 @@ from rich.style import Style
 
 # Local imports
 from textual_coloromatic.art_loader import ArtLoader
+import textual_coloromatic.art
+import textual_coloromatic.patterns
 
 # LITERALS:
 COLOR_MODE = Literal["color", "gradient", "none"]
@@ -48,24 +50,26 @@ class Coloromatic(Static):
     # ~ Public API Reactives ~ #
     ############################
 
-    text_input: reactive[str] = reactive[str]("", always_update=True)
+    text_input: reactive[str] = reactive("", always_update=False)
     """The content to render in the Coloromatic. This is a string that can be any text you want.
     It can be a single line or multiple lines."""
 
-    list_input: reactive[list[str]] = reactive[list[str]]([], always_update=True)
+    list_input: reactive[list[str]] = reactive([], always_update=True)
 
-    color_list: reactive[list[str]] = reactive[list[str]]([], always_update=True)
+    repeat: reactive[bool] = reactive(False, always_update=True)
+
+    color_list: reactive[list[str]] = reactive([], always_update=True)
     """A list of colors to use for the gradient. This is a list of strings that can be parsed by a
     Textual Color object. The list can be any number of colors you want. It also supports
     passing in Textual CSS variables ($primary, $secondary, $accent, etc). When using
     CSS variables, they will update automatically to match the theme whenever the user
     of your app changes the theme."""
 
-    animated: reactive[bool] = reactive[bool](False, always_update=True)
+    animated: reactive[bool] = reactive(False, always_update=True)
     """Whether to animate the gradient. This is a boolean value. If True, the gradient will
     animate."""
 
-    animation_type: reactive[ANIMATION_TYPE] = reactive[ANIMATION_TYPE]("gradient", always_update=True)
+    animation_type: reactive[ANIMATION_TYPE] = reactive("gradient", always_update=True)
     """The type of animation to use for the gradient. This is a string literal type that can
     be 'gradient', 'smooth_strobe', or 'fast_strobe'. The default is 'gradient'. 
     - 'gradient' will animate the current gradient it in the direction you specify
@@ -74,12 +78,12 @@ class Coloromatic(Static):
     - 'fast_strobe' will hard switch to the next color in the list.
     It does not make a gradient, and gradient_quality will be ignored."""
 
-    animation_fps: reactive[float | str] = reactive[float | str]("auto", always_update=True)
+    animation_fps: reactive[float | str] = reactive("auto", always_update=True)
     """The Frames per second for the animation. This is a float so that you can set it to values
     such as 0.5 if you desire. The default is 'auto', which will set the FPS to 12 for 'gradient',
     12 for 'smooth_strobe', and 1 for 'fast_strobe'."""
 
-    gradient_quality: reactive[int | str] = reactive[int | str]("auto", always_update=True)
+    gradient_quality: reactive[int | str] = reactive("auto", always_update=True)
     """The quality of the gradient. This means how many colors the gradient has
     in it. This is either 'auto' or an integer between 3 and 100. The higher the
     number, the smoother the gradient will be. By default, in auto mode,
@@ -89,13 +93,13 @@ class Coloromatic(Static):
     - In smooth_strobe mode, it will be set to (number of colors * 10).
     - In fast_strobe mode, this setting is ignored."""
 
-    horizontal: reactive[bool] = reactive[bool](False, always_update=True)
+    horizontal: reactive[bool] = reactive(False, always_update=True)
     """Whether the gradient should be horizontal or vertical. This is a boolean value. If
     True, the gradient will be horizontal. If False, the gradient will be vertical.
     Note that this will have no effect if the animation mode is 'smooth_strobe' or
     'fast_strobe' because they do not use a direction."""
 
-    reverse: reactive[bool] = reactive[bool](False, always_update=True)
+    reverse: reactive[bool] = reactive(False, always_update=True)
     """Whether the animation should run in reverse. This is a boolean value. If True, the
     animation will run in reverse. If False, the animation will run normally. If horizontal 
     is False, this will switch between up and down. If horizontal is True, this will switch 
@@ -107,7 +111,7 @@ class Coloromatic(Static):
     # ! Private Reactives ! #
     #########################
     _animation_lines: reactive[list[str]] = reactive(list, layout=True)
-    _color_mode: reactive[COLOR_MODE] = reactive[COLOR_MODE]("none", always_update=True)
+    _color_mode: reactive[COLOR_MODE] = reactive("none", always_update=True)
 
     class Updated(Message):
         """Message sent when the Coloromatic is updated."""
@@ -136,6 +140,7 @@ class Coloromatic(Static):
         self,
         content: str = "",
         *,
+        repeat: bool = False,
         colors: list[str] = [],
         animate: bool = False,
         animation_type: ANIMATION_TYPE = "gradient",
@@ -151,7 +156,8 @@ class Coloromatic(Static):
         Yar
 
         Args:
-            content: string to render
+            content: String to render
+            repeat: When True, the content will repeat to fill the entire widget.
             colors: List of colors to use for the gradient. This is a list of strings that can be
                 parsed by a Textual `Color` object that allows passing in any number of colors you want.
                 It also supports passing in Textual CSS variables ($primary, $secondary, $accent, etc).
@@ -179,7 +185,8 @@ class Coloromatic(Static):
                 If horizontal is False, this will switch between up and down. If horizontal is True, this
                 will switch between left and right.
                 Note that this will have no effect if the animation mode is 'smooth_strobe' or 'fast_strobe'
-                because they do not use a direction.
+                because they do not use a direction. It also does not have an effect on the order of
+                the colors (To change the color order, insert the color list in a different order)
             fps: The Frames per second for the animation.
                 This is a float so that you can set it to values such as 0.5 if you desire. The default
                 is 'auto', which will set the FPS to 12 for 'gradient', 12 for 'smooth_strobe', and 1
@@ -205,6 +212,25 @@ class Coloromatic(Static):
 
         self._initialized = False
 
+        try:
+            art_pkg_path = Path(getattr(textual_coloromatic.art, "__path__")[0])
+        except AttributeError as e:
+            raise AttributeError(
+                "Could not find the package path for textual_coloromatic.art. "
+                "Ensure that textual_coloromatic.art is a valid package."
+            ) from e
+        try:
+            patterns_pkg_path = Path(getattr(textual_coloromatic.patterns, "__path__")[0])
+        except AttributeError as e:
+            raise AttributeError(
+                "Could not find the package path for textual_coloromatic.patterns. "
+                "Ensure that textual_coloromatic.patterns is a valid package."
+            ) from e
+        
+        self.art_loader = ArtLoader([art_pkg_path, patterns_pkg_path])
+
+
+
         self._color_obj_list: list[Color] = []
         self._line_colors: deque[Style] = deque([Style()])
         self._gradient: Gradient | None = None
@@ -213,29 +239,31 @@ class Coloromatic(Static):
         self._direction_int: int = 1  # 1 = forwards, -1 = reverse
         self._fps = 0.0
 
-        self.set_reactive(Coloromatic.text_input, content)
-        self.set_reactive(Coloromatic._color_mode, "none")
-        self.set_reactive(Coloromatic.animated, animate)
-        self.set_reactive(Coloromatic.animation_type, animation_type)
-        self.set_reactive(Coloromatic.animation_fps, fps)
-        self.set_reactive(Coloromatic.gradient_quality, gradient_quality)
-        self.set_reactive(Coloromatic.horizontal, horizontal)
-        self.set_reactive(Coloromatic.reverse, reverse)
-        self.set_reactive(Coloromatic.color_list, colors)
-
-        self.mutate_reactive(Coloromatic.color_list)
+        self.text_input = content   # note - set both here and in the _complete_init__ method
+        self.repeat = repeat
         self.animation_fps = fps
+        self.horizontal = horizontal        
+        self.reverse = reverse
+        self.color_list = colors
+        self.animation_type = animation_type
+        self.gradient_quality = gradient_quality
+        self.animated = animate
 
     def _on_mount(self, event: events.Mount) -> None:
         super()._on_mount(event)
         self.app.theme_changed_signal.subscribe(self, self._refresh_theme)  # type: ignore[unused-ignore]
-        self.call_after_refresh(lambda: setattr(self, "_initialized", True))
+        self.call_after_refresh(self._complete_init__)
 
     def _refresh_theme(self, theme: Theme) -> None:
         for color in self.color_list:
             if color.startswith("$"):
                 self.color_list = self.color_list  # trigger the color list watcher
                 return
+            
+    def _complete_init__(self) -> None:
+
+        self._initialized = True
+        self.watch_text_input(self.text_input)  
 
     #################
     # ~ Public API ~#
@@ -432,16 +460,13 @@ class Coloromatic(Static):
             self.post_message(self.Updated(self, color_mode=color_mode))
 
     def watch_color_list(self, colors: list[str]) -> None:
-        # The reason this has its own method is that color_list, being a list,
-        # has to use the .mutate_reactive function every time its modified.
-        # That's a pain since the color re-calculation has to be triggered
-        # all over the program. So we just set the mode here and then _color_mode takes over.
 
         for color in self._color_obj_list:  # this is made by the validator function
             assert isinstance(color, Color), (
                 "Color list is set, but found a non-Color object. " "This should not happen."
             )
 
+        # We just set the mode here and then _color_mode takes over.
         if len(self._color_obj_list) == 0:
             self._color_mode = "none"
         elif len(self._color_obj_list) == 1:
@@ -451,22 +476,10 @@ class Coloromatic(Static):
 
     def watch_animated(self, animated: bool) -> None:
 
-        # This function is the secret to making it animate.
-        # Specifically the set_interval() line.
-        # At every interval, the timer calls self.refresh.
-        # Every time that this happens, the color queue will be rotated by 1.
-
         if animated:
-            if self._interval_timer:
-                self._interval_timer.resume()
-            else:
-                self._interval_timer = self.set_interval(
-                    interval=1 / self._fps, callback=self.refresh  # <-- Magic sauce
-                )
+            self.animation_fps = self.animation_fps
         else:
-            if self._interval_timer:
-                self._interval_timer.stop()
-                self._interval_timer = None
+            self.auto_refresh = None
 
         if self._initialized:
             self.post_message(self.Updated(self, animated=animated))
@@ -479,17 +492,13 @@ class Coloromatic(Static):
 
         if fps == "auto":
             if self.animation_type == "gradient":
-                self._fps = 12.0
+                self.auto_refresh = 1 / 12.0
             elif self.animation_type == "smooth_strobe":
-                self._fps = 8.0
+                self.auto_refresh = 1 / 8.0
             else:  # fast_strobe
-                self._fps = 1.0
+                self.auto_refresh = 1.0
         else:
-            self._fps = float(fps)
-
-        if self.animated:
-            self.animated = False  # Stop the animation if it was running.
-            self.animated = True  # Restart the animation with the new interval.
+            self.auto_refresh = 1 / float(fps)
 
     def watch_animation_type(self, animation_type: str) -> None:
 
@@ -531,18 +540,11 @@ class Coloromatic(Static):
         if self.size.width == 0 or self.size.height == 0:  # <- this prevents crashing on boot.
             return
 
-        assert isinstance(self.parent, Widget)  # This is for type hinting.
-        assert isinstance(self.styles.width, Scalar)  # These should always pass if it reaches here.
-
-        if not self._initialized:
-            self._initialized = True
-            self.call_after_refresh(lambda: setattr(self, "animated", self.animated))
-
         if self.animation_type == "gradient":  # make it recalculate the gradient when size changes.
             self._color_mode = self._color_mode
 
     # These two functions below are the secret sauce to making the auto sizing work.
-    # They are both over-rides, and they are called by the Textual framework
+    # They are both hooks, and they are called by the Textual framework
     # to determine the size of the widget.
     def get_content_width(self, container: Size, viewport: Size) -> int:
 
@@ -578,33 +580,58 @@ class Coloromatic(Static):
         # if the figlet output is blank, return 1 empty string
         return [""] if lines_cleaned == [] else lines_cleaned
 
-    def render_lines(self, crop: Region) -> list[Strip]:
+    def automatic_refresh(self) -> None:
+
         if self._gradient and self.animated:
             self._line_colors.rotate(self._direction_int)  # 1 = forwards, -1 = reverse
-        return super().render_lines(crop)
+        super().automatic_refresh()
+
 
     def render_line(self, y: int) -> Strip:
 
-        if y >= len(self._animation_lines):  # if the line is out of range, return blank
-            return Strip.blank(self.size.width)
-        try:
-            self._animation_lines[y]  # Safety net. Technically I think should not be needed.
-        except IndexError:
-            return Strip.blank(self.size.width)
-        else:
-            if self.animation_type == "gradient":
+        if self.repeat:
+            try:
+                line_index = y % len(self._animation_lines)
+                line = self._animation_lines[line_index]
+            except IndexError:
+                self.log.error("FigletWidget render_lines went out of bounds")
+                return Strip.blank(self.size.width)
+            except ZeroDivisionError:
+                return Strip.blank(self.size.width)
+            except Exception as e:
+                raise Exception("Unexpected error in render_line, please examine the cause") from e
 
-                if not self.horizontal:
-                    color_index = y % len(self._line_colors)  # This makes it rotate through the colors.
-                    segments = [Segment(self._animation_lines[y], style=self._line_colors[color_index])]
-                else:
-                    segments2: list[Segment] = []  # the 2 thing is just because of mypy, it doesn't like
-                    for i, char in enumerate(self._animation_lines[y]):  #   re-using the same variable name.
-                        color_index = i % len(self._line_colors)
-                        segments2.append(Segment(char, style=self._line_colors[color_index]))
-                    return Strip(segments2)
+            if not line:
+                return Strip.blank(self.size.width)            
+            repeat_count = (self.size.width // len(line)) + 1  # +1 is just extra filler for end
+            segment_chars = line * repeat_count
+            
+        else:   # not repeat (default)
 
-            else:  # smooth_strobe or fast_strobe - both change the whole figlet 1 color at a time.
-                segments = [Segment(self._animation_lines[y], style=self._line_colors[0])]
+            if y >= len(self._animation_lines):  # if the line is out of range, return blank
+                return Strip.blank(self.size.width)
+            try:
+                line = self._animation_lines[y]
+            except IndexError:
+                self.log.error("FigletWidget render_lines went out of bounds")
+                return Strip.blank(self.size.width)
 
-            return Strip(segments)
+            if not line:
+                return Strip.blank(self.size.width)
+            segment_chars = line
+
+        if self.animation_type == "gradient":
+
+            if not self.horizontal:  #   vertical is normal mode
+                color_index = y % len(self._line_colors)  # rotates through the colors.
+                return Strip([Segment(segment_chars, style=self._line_colors[color_index])]) 
+            else:
+                return Strip([
+                    Segment(char, style=self._line_colors[i % len(self._line_colors)])
+                    for i, char in enumerate(segment_chars)
+                ])
+        else:  # smooth_strobe or fast_strobe - both change the whole figlet 1 color at a time.
+            segments = [Segment(segment_chars, style=self._line_colors[0])]
+            return Strip(segments)  
+    
+

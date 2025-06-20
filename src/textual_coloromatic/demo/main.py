@@ -15,11 +15,11 @@ from pathlib import Path
 import random
 
 # Textual imports
-from textual import on, log
+from textual import on #, log
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Container, ScrollableContainer
 from textual.binding import Binding
-from textual.widgets import Header, Footer, Static, Button, Select
+from textual.widgets import Header, Footer, Static, Button, Select, Switch
 
 # Textual library imports
 from textual_slidecontainer import SlideContainer
@@ -28,8 +28,11 @@ from textual_slidecontainer import SlideContainer
 from textual_coloromatic import Coloromatic
 from textual_coloromatic.demo.datawidget import ActiveColors
 from textual_coloromatic.demo.settingsbar import SettingsWidget
-from textual_coloromatic.demo.screens import HelpScreen
-from textual_coloromatic.art_loader import ArtLoader
+from textual_coloromatic.demo.screens import HelpScreen, CustomStringScreen
+# from textual_coloromatic.art_loader import ArtLoader
+
+
+
 
 
 class BottomBar(Horizontal):
@@ -37,25 +40,45 @@ class BottomBar(Horizontal):
     def __init__(self, coloromatic: Coloromatic):
         super().__init__()
         self.coloromatic = coloromatic
-        self.art_loader = ArtLoader()
-        self.art_list: list[Path] = self.art_loader.load_art_file_list()
+        self.file_dict: dict[str, list[Path]] = coloromatic.art_loader.load_file_dict()
 
-        self.art_selections: list[tuple[str, Path]] = []
-        for path in self.art_list:
-            log(f"Loaded path: {path.name}")
-            display_name = path.name.replace(path.suffix, "")
-            self.art_selections.append((display_name, path))
+        self.art_options: list[tuple[str, Path]] = []
+        self.pattern_options: list[tuple[str, Path]] = []
+
+        for key, path_list in self.file_dict.items():
+            for path in path_list:
+                display_name = path.name.replace(path.suffix, "")
+                if key == "art":
+                    self.art_options.append((display_name, path))  
+                elif key == "patterns":
+                    self.pattern_options.append((display_name, path))  
 
     def compose(self) -> ComposeResult:
 
-        yield Select(self.art_selections, id="art_select", allow_blank=True)
-        yield Button("Random Art", id="randomize_button")
+        yield Select(self.art_options, id="art_select", allow_blank=True)
+        yield Button("Random", id="randomize_button")
+        yield Button("Custom", id="custom_button")
+        yield Switch(id="art_pattern_switch")
+        yield Static("Toggle showing art or patterns", classes="bottombar_item")
 
     @on(Button.Pressed, "#randomize_button")
     def randomize_art(self) -> None:
 
         art_select = cast(Select[Path], self.query_one("#art_select", Select))
-        art_select.value = random.choice(self.art_list)  # triggers method art_changed (below)
+        if self.query_one(Switch).value:    # pattern mode
+            art_select.value = random.choice(self.file_dict["patterns"])
+        else: # art mode
+            art_select.value = random.choice(self.file_dict["art"])    
+
+    @on(Button.Pressed, "#custom_button")
+    def custom_str_button(self) -> None:   
+
+        self.app.push_screen(CustomStringScreen(), callback=self.update_with_custom)
+
+    def update_with_custom(self, new_str: str | None):
+
+        if new_str:
+            self.coloromatic.text_input = new_str
 
     @on(Select.Changed, selector="#art_select")
     def art_changed(self, event: Select.Changed) -> None:
@@ -67,6 +90,15 @@ class BottomBar(Horizontal):
 
         if isinstance(event.value, Path):
             self.coloromatic.update_from_path(event.value)
+
+    @on(Switch.Changed)
+    def switch_changed(self, event: Switch.Changed):
+        
+        art_select = cast(Select[Path], self.query_one("#art_select", Select))
+        if event.value:     # on = show patterns
+             art_select.set_options(self.pattern_options)
+        else:
+             art_select.set_options(self.art_options)
 
 
 class ColoromaticDemo(App[Any]):
@@ -119,9 +151,9 @@ class ColoromaticDemo(App[Any]):
             self.settings_widget.animate_switch.tooltip = None
 
     @on(ActiveColors.Updated)
-    def activecolors_updated(self) -> None:
+    def activecolors_updated(self, event: ActiveColors.Updated) -> None:
 
-        active_colors = self.query_one(ActiveColors)
+        active_colors = cast(ActiveColors, event.widget)
         self.log(active_colors)
         color_name_strings: list[str] = []
         for item in active_colors:

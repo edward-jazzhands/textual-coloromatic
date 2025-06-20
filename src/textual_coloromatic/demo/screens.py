@@ -24,6 +24,7 @@ from textual.widgets import (
     Markdown,
     Button,
     ListItem,
+    TextArea,
 )
 
 
@@ -34,7 +35,7 @@ from textual_coloromatic.demo.validators import ColorValidator
 from textual_coloromatic.demo.custom_listview import Selected
 
 
-class ColorScreen(ModalScreen[bool]):
+class ColorScreen(ModalScreen[None]):
 
     BINDINGS = [
         Binding("escape,enter", "close_screen", description="Close the help window.", show=True),
@@ -47,14 +48,14 @@ class ColorScreen(ModalScreen[bool]):
 
     def compose(self) -> ComposeResult:
 
-        with Container(id="colors_container"):
+        with Container(classes="screen_container colors"):
             yield Static(
                 "Enter your colors into the Input below.\n" "Select a color in the list to remove it.\n"
             )
             yield Input(id="colorscreen_input", validators=[ColorValidator(self.app.theme_variables)])
             self.listview = CustomListView(id="colorscreen_list")
             yield self.listview
-            with Horizontal(id="colorscreen_buttonbar"):
+            with Horizontal(classes="screen_buttonbar"):
                 yield Button("Cancel", id="cancel")
                 yield Button("Accept", id="accept")
 
@@ -99,13 +100,48 @@ class ColorScreen(ModalScreen[bool]):
 
     @on(Button.Pressed, selector="#cancel")
     def cancel_pressed(self) -> None:
-        self.dismiss(False)
+        self.dismiss()
 
     @on(Button.Pressed, selector="#accept")
     def accept_pressed(self) -> None:
         self.app_active_colors.clear()
         self.app_active_colors.extend(self.new_colors)
-        self.dismiss(True)
+        self.dismiss()
+
+
+class CustomStringScreen(ModalScreen[str]):
+
+    BINDINGS = [
+        Binding("escape,enter", "close_screen", description="Close the help window.", show=True),
+    ]
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def compose(self) -> ComposeResult:
+
+        with Container(classes="screen_container string"):
+            yield Static(
+                "Enter your string into the text area below.\n"
+            )
+            yield TextArea()
+            with Horizontal(classes="screen_buttonbar"):
+                yield Button("Cancel", id="cancel")
+                yield Button("Accept", id="accept")
+
+    def on_mount(self) -> None:
+        self.query_one(TextArea).focus()
+
+    def action_close_screen(self) -> None:
+        self.dismiss()
+
+    @on(Button.Pressed, selector="#cancel")
+    def cancel_pressed(self) -> None:
+        self.dismiss()
+
+    @on(Button.Pressed, selector="#accept")
+    def accept_pressed(self) -> None:
+        self.dismiss(self.query_one(TextArea).text)
 
 
 class HelpScreen(ModalScreen[None]):
@@ -119,7 +155,7 @@ class HelpScreen(ModalScreen[None]):
         with resources.open_text("textual_coloromatic", "help.md") as f:
             self.help = f.read()
 
-        with VerticalScroll(id="help_container"):
+        with VerticalScroll(classes="screen_container help"):
             yield Markdown(self.help)
 
     def on_mount(self) -> None:

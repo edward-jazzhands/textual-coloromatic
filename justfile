@@ -10,6 +10,14 @@ run:
 run-dev:
 	uv run textual run --dev textual_coloromatic.demo:ColoromaticDemo
 
+# Run the small example script
+run-ex:
+	uv run examples/example1.py
+
+# Run the small example script in dev mode
+run-ex-dev:
+	uv run textual run --dev examples/example1.py	
+
 # Run the console
 console:
 	uv run textual console -x EVENT -x SYSTEM

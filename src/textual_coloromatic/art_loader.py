@@ -4,13 +4,10 @@
 from __future__ import annotations
 from pathlib import Path
 
-# from textual.widget import Widget
-import textual_coloromatic.art
-
 
 class ArtLoader:
 
-    def __init__(self, directories: list[Path] | None = None) -> None:
+    def __init__(self, directories: list[Path]) -> None:
         """
         Initialize the art loader with one or more art directories.
 
@@ -18,43 +15,27 @@ class ArtLoader:
             directories: List of directories to search for art files.
         """
         super().__init__()
+
         self.display = False
-        self.directories: list[Path] = []
+        self.directories: list[Path] = directories
 
-        try:
-            pkg_path: list[str] = getattr(textual_coloromatic.art, "__path__")
-        except AttributeError as e:
-            raise AttributeError(
-                "Could not find the package path for textual_coloromatic.art. "
-                "Ensure that textual_coloromatic.art is a valid package."
-            ) from e
 
-        default_path = Path(pkg_path[0])
-        if not default_path.exists():
-            raise FileNotFoundError(f"Art directory not found: {default_path}")
+    def load_file_dict(self) -> dict[str, list[Path]]:
+        """Scan all file directories for .txt files. Returns a dict with each directory as
+        the key and the value is a list of Path objects (one path object for each .txt file)"""
+        accepted_extensions = {".txt"}
 
-        self.directories.extend([default_path])
-        if directories:
-            self.directories.extend(directories)
-
-    def load_art_file_list(self) -> list[Path]:
-        """
-        Scan all art directories for .txt files and return a list of their paths.
-        """
-        accepted_extensions = {".txt", ".md", ".art"}
-
-        art_files: list[Path] = []
+        paths_dict: dict[str, list[Path]] = {}
         for directory in self.directories:
+            files: list[Path] = []
             if not directory.exists():
                 continue
             for file in directory.iterdir():
                 if file.is_file() and file.suffix in accepted_extensions:
-                    art_files.append(file)
+                    files.append(file)
+            paths_dict[directory.name] = files
 
-        if not art_files:
-            raise FileNotFoundError("No art files found in the specified directories.")
-
-        return art_files
+        return paths_dict
 
     @staticmethod
     def extract_art_at_path(path: Path) -> list[str]:
