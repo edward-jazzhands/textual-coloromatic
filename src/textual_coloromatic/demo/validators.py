@@ -1,6 +1,7 @@
 "validators.py"
 
 from __future__ import annotations
+import re
 
 from textual.validation import Validator, ValidationResult  # , Number
 from textual.color import Color, ColorParseError
@@ -71,3 +72,24 @@ class FPSValidator(Validator):
                 return self.failure(
                     "Invalid FPS format. Must be empty (for auto), or a float greater than 0 with max 100."
                 )
+
+
+class SizeValidator(Validator):
+
+    patterns = [
+        r"^[1-9][0-9]{0,2}$",  # Number between 1-999
+        r"^(100|[1-9]?[0-9])%$",  # Percentage
+        r"^\d*\.?\d+fr$",  # Float followed by 'fr'
+    ]
+
+    def validate(self, value: str) -> ValidationResult:
+
+        if any(re.match(pattern, value) for pattern in self.patterns):
+            return self.success()
+        elif value == "":
+            return self.success()
+        else:
+            return self.failure(
+                "Invalid size format. Must be a number between 1-999, a percentage, "
+                "a float followed by 'fr', or 'auto'."
+            )
