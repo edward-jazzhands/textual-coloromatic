@@ -470,7 +470,6 @@ class Coloromatic(Widget):
 
     def watch_pattern(self, pattern: PATTERNS | None) -> None:
 
-        self.log(f"watch_pattern called with {pattern = }")
         if pattern is None:
             return
         self.repeat = True
@@ -615,7 +614,6 @@ class Coloromatic(Widget):
 
     @on(Updated)
     def self_updated(self) -> None:
-        self.log.debug("Received update event")
         self.query_children().refresh(layout=True)
 
     def make_gradient(self, colors: list[Color], quality: int) -> Gradient:
@@ -683,8 +681,6 @@ class Coloromatic(Widget):
 
     def automatic_refresh(self) -> None:
 
-        self.log("Auto refresh method called")
-
         if self._gradient and self.animated:
             self._line_colors.rotate(self._direction_int)  # 1 = forwards, -1 = reverse
         super().automatic_refresh()
@@ -706,7 +702,6 @@ class Coloromatic(Widget):
                 raise Exception("Unexpected error in render_line, please examine the cause") from e
 
             if not line:
-                self.log.debug("Not line, returning blank")
                 return Strip.blank(self.size.width)
             repeat_count = (self.size.width // len(line)) + 1  # +1 is just extra filler for end
             segment_chars = line * repeat_count

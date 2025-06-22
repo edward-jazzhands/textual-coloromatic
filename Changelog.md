@@ -1,5 +1,9 @@
 # Textual-Color-O-Matic Changelog
 
+## 0.2.1 (2025-06-19)
+
+- Removed the logging statements from Coloromatic (forgot to remove them)
+
 ## 0.2.0 (2025-06-19) - The Repeating Update
 
 - Added a big new feature, repeating patterns. Colormatic now has a `repeat` argument and reactive attribute of the same name.
