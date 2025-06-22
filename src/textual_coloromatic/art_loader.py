@@ -18,7 +18,9 @@ class ArtLoader:
 
         self.display = False
         self.directories: list[Path] = directories
-
+        self.file_dict = self.load_file_dict()
+        """String (key) is the directory name. The value is a list of path objects for each .txt file
+        in that directory."""
 
     def load_file_dict(self) -> dict[str, list[Path]]:
         """Scan all file directories for .txt files. Returns a dict with each directory as
@@ -36,6 +38,18 @@ class ArtLoader:
             paths_dict[directory.name] = files
 
         return paths_dict
+
+    def add_directory(self, directory: Path) -> None:
+        """
+        Add a new directory to the art loader.
+
+        Args:
+            directory: The directory to add.
+        """
+        if not directory.exists() or not directory.is_dir():
+            raise ValueError(f"Invalid directory: {directory}")
+        self.directories.append(directory)
+        self.file_dict = self.load_file_dict()
 
     @staticmethod
     def extract_art_at_path(path: Path) -> list[str]:

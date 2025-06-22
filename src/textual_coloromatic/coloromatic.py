@@ -6,13 +6,13 @@
 
 # STANDARD LIBRARY IMPORTS
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, get_args
 from pathlib import Path
 
 if TYPE_CHECKING:
     # from textual.visual import VisualType
     from textual import events
-    from textual.geometry import Size #, Region
+    from textual.geometry import Size  # , Region
 
 from typing import cast
 from typing_extensions import Literal  # , get_args
@@ -20,13 +20,17 @@ from collections import deque
 from copy import deepcopy
 
 # Textual and Rich imports
+from textual import on
 from textual.theme import Theme
 from textual.color import Gradient, Color
+
 # from textual.css.scalar import Scalar
 from textual.message import Message
 from textual.strip import Strip
-# from textual.widget import Widget
-from textual.widgets import Static
+from textual.widget import Widget
+
+# from textual.widgets import Static
+# from textual.containers import Container
 from textual.reactive import reactive
 from textual.timer import Timer
 from rich.segment import Segment
@@ -34,15 +38,34 @@ from rich.style import Style
 
 # Local imports
 from textual_coloromatic.art_loader import ArtLoader
-import textual_coloromatic.art
 import textual_coloromatic.patterns
 
 # LITERALS:
 COLOR_MODE = Literal["color", "gradient", "none"]
 ANIMATION_TYPE = Literal["gradient", "smooth_strobe", "fast_strobe"]
+PATTERNS = Literal[
+    "brick1",
+    "brick2",
+    "crosses",
+    "fence1",
+    "fence2",
+    "fish",
+    "hive",
+    "honeycomb1",
+    "honeycomb2",
+    "honeycomb3",
+    "jaggedwave",
+    "persian",
+    "squares",
+    "tesselation1",
+    "tesselation2",
+    "tesselation3",
+    "triangles",
+    "weave",
+]
 
 
-class Coloromatic(Static):
+class Coloromatic(Widget):
 
     DEFAULT_CSS = "Coloromatic {width: auto; height: auto;}"
 
@@ -50,13 +73,23 @@ class Coloromatic(Static):
     # ~ Public API Reactives ~ #
     ############################
 
-    text_input: reactive[str] = reactive("", always_update=False)
+    text_input: reactive[str] = reactive("", always_update=True)
     """The content to render in the Coloromatic. This is a string that can be any text you want.
     It can be a single line or multiple lines."""
 
-    list_input: reactive[list[str]] = reactive([], always_update=True)
+    list_input: reactive[list[str] | None] = reactive(None, always_update=True)
+    """The content to render in the Coloromatic. This is the same as text_input but it will take
+    a list of strings instead of a single string.
+    list_input is None by default. If used it will override text_input."""
 
     repeat: reactive[bool] = reactive(False, always_update=True)
+    """Setting this to true will make the content in the Coloromatic repeat to fill the entire
+    space of the Coloromatic. This can be used to make tiling effects. It is also set to True
+    automatically if a pattern is set."""
+
+    pattern: reactive[PATTERNS | None] = reactive(None, always_update=True)
+    """Choose a built-in pattern from the list of available patterns.
+    If this is set, there is no need to set the text_input or list_input directly."""
 
     color_list: reactive[list[str]] = reactive([], always_update=True)
     """A list of colors to use for the gradient. This is a list of strings that can be parsed by a
@@ -119,17 +152,14 @@ class Coloromatic(Static):
         def __init__(
             self,
             widget: Coloromatic,
-            *,
-            color_mode: COLOR_MODE | None = None,
-            animated: bool | None = None,
         ) -> None:
             super().__init__()
 
             self.widget = widget
             "The Coloromatic that was updated."
-            self.color_mode = color_mode
+            self.color_mode = widget._color_mode
             "The color mode that was set. This is a string literal type that can be 'color', 'gradient', or 'none'."
-            self.animated = animated
+            self.animated = widget.animated
             "Whether the Coloromatic is animated. This is a boolean value."
 
         @property
@@ -141,6 +171,7 @@ class Coloromatic(Static):
         content: str = "",
         *,
         repeat: bool = False,
+        pattern: PATTERNS | None = None,
         colors: list[str] = [],
         animate: bool = False,
         animation_type: ANIMATION_TYPE = "gradient",
@@ -156,8 +187,13 @@ class Coloromatic(Static):
         Yar
 
         Args:
-            content: String to render
-            repeat: When True, the content will repeat to fill the entire widget.
+            content: The content to render in the Coloromatic. It can be a single
+                line or multiple lines.
+            repeat: Setting this to true will make the content in the Coloromatic repeat to fill the
+                entire space of the Coloromatic. This can be used to make tiling effects. It is also
+                 set to True automatically if a pattern is set.
+            pattern: Choose a built-in pattern from the list of available patterns.
+                If this is set, there is no need to set the text_input or list_input directly.
             colors: List of colors to use for the gradient. This is a list of strings that can be
                 parsed by a Textual `Color` object that allows passing in any number of colors you want.
                 It also supports passing in Textual CSS variables ($primary, $secondary, $accent, etc).
@@ -212,24 +248,14 @@ class Coloromatic(Static):
 
         self._initialized = False
 
-        try:
-            art_pkg_path = Path(getattr(textual_coloromatic.art, "__path__")[0])
-        except AttributeError as e:
-            raise AttributeError(
-                "Could not find the package path for textual_coloromatic.art. "
-                "Ensure that textual_coloromatic.art is a valid package."
-            ) from e
-        try:
-            patterns_pkg_path = Path(getattr(textual_coloromatic.patterns, "__path__")[0])
-        except AttributeError as e:
-            raise AttributeError(
-                "Could not find the package path for textual_coloromatic.patterns. "
-                "Ensure that textual_coloromatic.patterns is a valid package."
-            ) from e
-        
-        self.art_loader = ArtLoader([art_pkg_path, patterns_pkg_path])
-
-
+        patterns_pkg_path = Path(next(iter(getattr(textual_coloromatic.patterns, "__path__"))))
+        self.art_loader = ArtLoader([patterns_pkg_path])
+        file_dict: dict[str, list[Path]] = self.art_loader.file_dict
+        patterns_list = file_dict["patterns"]
+        self.pattern_options: dict[str, Path] = {}
+        for path in patterns_list:
+            display_name = path.name.replace(path.suffix, "")
+            self.pattern_options[display_name] = path
 
         self._color_obj_list: list[Color] = []
         self._line_colors: deque[Style] = deque([Style()])
@@ -239,10 +265,11 @@ class Coloromatic(Static):
         self._direction_int: int = 1  # 1 = forwards, -1 = reverse
         self._fps = 0.0
 
-        self.text_input = content   # note - set both here and in the _complete_init__ method
+        self.text_input = content  # note - set both here and in the _complete_init__ method
         self.repeat = repeat
+        self.pattern = pattern
         self.animation_fps = fps
-        self.horizontal = horizontal        
+        self.horizontal = horizontal
         self.reverse = reverse
         self.color_list = colors
         self.animation_type = animation_type
@@ -259,20 +286,36 @@ class Coloromatic(Static):
             if color.startswith("$"):
                 self.color_list = self.color_list  # trigger the color list watcher
                 return
-            
+
     def _complete_init__(self) -> None:
 
         self._initialized = True
-        self.watch_text_input(self.text_input)  
+        # self.watch_text_input(self.text_input)
+        # self.watch_list_input(self.list_input)
+        self.mutate_reactive(Coloromatic._animation_lines)
+        self.post_message(self.Updated(self))
 
     #################
     # ~ Public API ~#
     #################
 
+    def update_from_string(self, text: str) -> None:
+
+        self.text_input = text
+
     def update_from_path(self, path: Path) -> None:
 
-        extracted_art = ArtLoader.extract_art_at_path(path)
+        extracted_art = self.art_loader.extract_art_at_path(path)
         self.list_input = extracted_art
+
+    def set_pattern(self, pattern: str) -> None:
+        """Choose a pattern from a list of built-in options.
+
+        Note that this method takes a string instead of a string literal type. This means
+        it can take in variables as input, but it will not provide auto-complete for the available
+        patterns. To get auto-complete, set the Coloromatic.pattern reactive variable directly."""
+
+        self.pattern = cast(PATTERNS, pattern)
 
     def set_color_list(self, colors: list[str]) -> None:
         """A list of colors to use for the gradient. This is a list of strings that can be
@@ -288,8 +331,10 @@ class Coloromatic(Static):
 
     def set_animation_type(self, animation_type: str) -> None:
         """Set the animation type of the PyFiglet widget.
+
         This method, unlike setting the reactive property, allows passing in a string
         instead of a string literal type. This is useful for passing in a variable.
+
         Args:
             animation_type: The animation type to set. Can be 'gradient', 'smooth_strobe', or 'fast_strobe'.
         """
@@ -302,9 +347,40 @@ class Coloromatic(Static):
 
         self.animated = not self.animated
 
+    def add_directory(self, directory: Path) -> None:
+        """Add a new directory to the art loader. After using this method the
+        file_dict will be updated to include the new directory.
+
+        Args:
+            directory: The directory to add.
+        """
+        self.art_loader.add_directory(directory)
+
+    @property
+    def file_dict(self) -> dict[str, list[Path]]:
+        """Get the file dictionary from the art loader. This is a dictionary with the directory name as
+        the key and a list of Path objects as the value. The Path objects point to .txt files in that directory.
+        """
+        return self.art_loader.file_dict
+
     #################
     # ~ Validators ~#
     #################
+
+    def validate_pattern(self, pattern: PATTERNS | None) -> PATTERNS | None:
+
+        if pattern is None:
+            return None
+
+        if pattern and pattern not in get_args(PATTERNS):
+            raise ValueError(
+                "The entered pattern does not exist in the list of options. Try "
+                "setting Coloromatic.patterns directly to get auto-complete for available patterns."
+            )
+        if pattern not in self.pattern_options:  #! this should not be necessary... here until Im sure
+            raise ValueError(f"Pattern {pattern} not found in the list of options.")
+
+        return pattern
 
     def validate_color_list(self, colors: list[str] | None) -> list[str] | None:
 
@@ -379,10 +455,27 @@ class Coloromatic(Static):
             self._animation_lines = self.special_list_stripper(text.splitlines())
             self.mutate_reactive(Coloromatic._animation_lines)
 
-    def watch_list_input(self, list_in: list[str]) -> None:
+        if self._initialized:
+            self.post_message(self.Updated(self))
 
+    def watch_list_input(self, list_in: list[str] | None) -> None:
+
+        if list_in is None:
+            return
         self._animation_lines = self.special_list_stripper(list_in)
         self.mutate_reactive(Coloromatic._animation_lines)
+
+        if self._initialized:
+            self.post_message(self.Updated(self))
+
+    def watch_pattern(self, pattern: PATTERNS | None) -> None:
+
+        self.log(f"watch_pattern called with {pattern = }")
+        if pattern is None:
+            return
+        self.repeat = True
+        pattern_path_obj = self.pattern_options[pattern]
+        self.update_from_path(pattern_path_obj)
 
     def watch__color_mode(self, color_mode: COLOR_MODE) -> None:
 
@@ -457,7 +550,7 @@ class Coloromatic(Static):
             raise ValueError(f"Invalid color mode: {color_mode}. Must be 'color', 'gradient', or 'none'.")
 
         if self._initialized:
-            self.post_message(self.Updated(self, color_mode=color_mode))
+            self.post_message(self.Updated(self))
 
     def watch_color_list(self, colors: list[str]) -> None:
 
@@ -482,7 +575,7 @@ class Coloromatic(Static):
             self.auto_refresh = None
 
         if self._initialized:
-            self.post_message(self.Updated(self, animated=animated))
+            self.post_message(self.Updated(self))
 
     def watch_reverse(self, new_value: bool) -> None:
 
@@ -490,15 +583,18 @@ class Coloromatic(Static):
 
     def watch_animation_fps(self, fps: float | str) -> None:
 
-        if fps == "auto":
-            if self.animation_type == "gradient":
-                self.auto_refresh = 1 / 12.0
-            elif self.animation_type == "smooth_strobe":
-                self.auto_refresh = 1 / 8.0
-            else:  # fast_strobe
-                self.auto_refresh = 1.0
-        else:
-            self.auto_refresh = 1 / float(fps)
+        if self.animated:
+            if fps == "auto":
+                if self.animation_type == "gradient":
+                    self.auto_refresh = 1 / 12.0
+                elif self.animation_type == "smooth_strobe":
+                    self.auto_refresh = 1 / 8.0
+                else:  # fast_strobe
+                    self.auto_refresh = 1.0
+            else:
+                self.auto_refresh = 1 / float(fps)
+        # else:                             # <- this check should not be necessary.
+        # self.auto_refresh = None
 
     def watch_animation_type(self, animation_type: str) -> None:
 
@@ -516,6 +612,11 @@ class Coloromatic(Static):
     ######################
     # ~ RENDERING LOGIC ~#
     ######################
+
+    @on(Updated)
+    def self_updated(self) -> None:
+        self.log.debug("Received update event")
+        self.query_children().refresh(layout=True)
 
     def make_gradient(self, colors: list[Color], quality: int) -> Gradient:
 
@@ -582,14 +683,16 @@ class Coloromatic(Static):
 
     def automatic_refresh(self) -> None:
 
+        self.log("Auto refresh method called")
+
         if self._gradient and self.animated:
             self._line_colors.rotate(self._direction_int)  # 1 = forwards, -1 = reverse
         super().automatic_refresh()
 
-
     def render_line(self, y: int) -> Strip:
 
         if self.repeat:
+
             try:
                 line_index = y % len(self._animation_lines)
                 line = self._animation_lines[line_index]
@@ -597,16 +700,18 @@ class Coloromatic(Static):
                 self.log.error("FigletWidget render_lines went out of bounds")
                 return Strip.blank(self.size.width)
             except ZeroDivisionError:
+                self.log.error("Divizion by zero")
                 return Strip.blank(self.size.width)
             except Exception as e:
                 raise Exception("Unexpected error in render_line, please examine the cause") from e
 
             if not line:
-                return Strip.blank(self.size.width)            
+                self.log.debug("Not line, returning blank")
+                return Strip.blank(self.size.width)
             repeat_count = (self.size.width // len(line)) + 1  # +1 is just extra filler for end
             segment_chars = line * repeat_count
-            
-        else:   # not repeat (default)
+
+        else:  # not repeat (default)
 
             if y >= len(self._animation_lines):  # if the line is out of range, return blank
                 return Strip.blank(self.size.width)
@@ -624,14 +729,13 @@ class Coloromatic(Static):
 
             if not self.horizontal:  #   vertical is normal mode
                 color_index = y % len(self._line_colors)  # rotates through the colors.
-                return Strip([Segment(segment_chars, style=self._line_colors[color_index])]) 
+                return Strip([Segment(segment_chars, style=self._line_colors[color_index])])
             else:
-                return Strip([
-                    Segment(char, style=self._line_colors[i % len(self._line_colors)])
-                    for i, char in enumerate(segment_chars)
-                ])
+                return Strip(
+                    [
+                        Segment(char, style=self._line_colors[i % len(self._line_colors)])
+                        for i, char in enumerate(segment_chars)
+                    ]
+                )
         else:  # smooth_strobe or fast_strobe - both change the whole figlet 1 color at a time.
-            segments = [Segment(segment_chars, style=self._line_colors[0])]
-            return Strip(segments)  
-    
-
+            return Strip([Segment(segment_chars, style=self._line_colors[0])])

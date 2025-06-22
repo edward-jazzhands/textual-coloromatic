@@ -35,10 +35,46 @@ from textual_coloromatic.demo.validators import ColorValidator
 from textual_coloromatic.demo.custom_listview import Selected
 
 
+class HelpScreen(ModalScreen[None]):
+
+    BINDINGS = [
+        Binding("escape,enter", "close_screen", description="Close the help window.", show=True),
+    ]
+
+    def __init__(self, anchor: str | None = None) -> None:
+        super().__init__()
+        self.anchor_line = anchor
+
+    def compose(self) -> ComposeResult:
+
+        with resources.open_text("textual_coloromatic", "help.md") as f:
+            self.help = f.read()
+
+        with VerticalScroll(classes="screen_container help"):
+            yield Markdown(self.help)
+
+    def on_mount(self) -> None:
+        self.query_one(VerticalScroll).focus()
+        if self.anchor_line:
+            found = self.query_one(Markdown).goto_anchor(self.anchor_line)
+            if not found:
+                self.log.error(f"Anchor '{self.anchor_line}' not found in help document.")
+
+    def on_click(self) -> None:
+        self.dismiss()
+
+    def action_close_screen(self) -> None:
+        self.dismiss()
+
+    def go_to_anchor(self, anchor: str) -> None:
+        """Scroll to a specific anchor in the help screen."""
+
+
 class ColorScreen(ModalScreen[None]):
 
     BINDINGS = [
         Binding("escape,enter", "close_screen", description="Close the help window.", show=True),
+        Binding("f1", "show_help", "Show help"),
     ]
 
     def __init__(self) -> None:
@@ -50,7 +86,9 @@ class ColorScreen(ModalScreen[None]):
 
         with Container(classes="screen_container colors"):
             yield Static(
-                "Enter your colors into the Input below.\n" "Select a color in the list to remove it.\n"
+                "Enter your colors into the Input below.\n"
+                "Select a color in the list to remove it.\n"
+                "Press F1 for help screen."
             )
             yield Input(id="colorscreen_input", validators=[ColorValidator(self.app.theme_variables)])
             self.listview = CustomListView(id="colorscreen_list")
@@ -108,6 +146,9 @@ class ColorScreen(ModalScreen[None]):
         self.app_active_colors.extend(self.new_colors)
         self.dismiss()
 
+    def action_show_help(self) -> None:
+        self.app.push_screen(HelpScreen("colors"))
+
 
 class CustomStringScreen(ModalScreen[str]):
 
@@ -115,16 +156,15 @@ class CustomStringScreen(ModalScreen[str]):
         Binding("escape,enter", "close_screen", description="Close the help window.", show=True),
     ]
 
-    def __init__(self) -> None:
+    def __init__(self, stored_custom_str: str) -> None:
         super().__init__()
+        self.stored_custom_str = stored_custom_str
 
     def compose(self) -> ComposeResult:
 
         with Container(classes="screen_container string"):
-            yield Static(
-                "Enter your string into the text area below.\n"
-            )
-            yield TextArea()
+            yield Static("Enter your string into the text area below.\n")
+            yield TextArea(self.stored_custom_str)
             with Horizontal(classes="screen_buttonbar"):
                 yield Button("Cancel", id="cancel")
                 yield Button("Accept", id="accept")
@@ -142,27 +182,3 @@ class CustomStringScreen(ModalScreen[str]):
     @on(Button.Pressed, selector="#accept")
     def accept_pressed(self) -> None:
         self.dismiss(self.query_one(TextArea).text)
-
-
-class HelpScreen(ModalScreen[None]):
-
-    BINDINGS = [
-        Binding("escape,enter", "close_screen", description="Close the help window.", show=True),
-    ]
-
-    def compose(self) -> ComposeResult:
-
-        with resources.open_text("textual_coloromatic", "help.md") as f:
-            self.help = f.read()
-
-        with VerticalScroll(classes="screen_container help"):
-            yield Markdown(self.help)
-
-    def on_mount(self) -> None:
-        self.query_one(VerticalScroll).focus()
-
-    def on_click(self) -> None:
-        self.dismiss()
-
-    def action_close_screen(self) -> None:
-        self.dismiss()

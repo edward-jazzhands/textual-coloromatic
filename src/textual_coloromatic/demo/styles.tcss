@@ -8,16 +8,22 @@ Screen {layout: horizontal;}
     align: center middle;
     content-align: center middle;
     & > Coloromatic {
-        # border: round $primary;
         content-align: center middle;
-        # hatch: left $surface-lighten-1;
-        # background: $surface;
-        &.bordered { border: round $primary; }
-        &.backgrounded { background: $surface; }
+        align: center middle;
+        &.transparent { background: blue; }
+        &.bordered { border: wide $panel-lighten-1; }
+        & > TextArea { 
+            min-width: 25; width: auto;
+            height: auto; min-height: 3; max-height: 8;
+            border: tall $primary; 
+            padding: 0 1;
+            background: $surface;
+            # offset-x: 10;
+            # offset-y: 3;
+        }
     }
+    & > #size_display { content-align: right middle; dock: bottom;}
 }
-
-#size_display { content-align: right middle; }
 
 BottomBar {
     height: 4; 
@@ -25,7 +31,9 @@ BottomBar {
     background: $panel; 
     align: center top;
     & > .bottombar_item { width: 13; padding: 0 1 0 0; }
-    & > Button { min-width: 10; }
+    & > Button { min-width: 8; width: auto; }
+    & > Select { min-width: 15; }
+    & > Switch { width: 6; padding: 0; }
     & > #randomize_button { margin: 0 1 0 0; }
 }
 
@@ -47,6 +55,7 @@ SlideContainer {
             content-align: center middle; 
             margin: 0 0 1 0;
         }
+        & > #size_label { content-align: right middle; padding: 0 2; }
         & > SettingBox {
             padding: 0;
             margin: 0 1;

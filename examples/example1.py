@@ -24,10 +24,6 @@ fps_tops = 15
 symbol_top = "▄"
 symbol_bottom = "▀"
 symbol_side = "█"
-pattern = r"""\  \__
- \__\ 
-__\  \
-"""
 #############
 
 class TextualApp(App[None]):
@@ -76,14 +72,6 @@ class TextualApp(App[None]):
                     fps=fps_sides,
                     classes="left_right",
                 )
-                # with Coloromatic(
-                #     pattern,
-                #     repeat=True,
-                #     colors=color_list,
-                #     animate=True,
-                #     id="pattern"               
-                # ):
-                #     yield Static("Hello")
                 yield Placeholder()
                 yield Coloromatic(
                     symbol_side,
@@ -107,8 +95,8 @@ class TextualApp(App[None]):
                 id="bottom_row"               
             )  
         with Coloromatic(
-            pattern,
-            repeat=True,
+            # repeat=True,
+            pattern="brick2",
             colors=color_list,
             animate=True,
             id="pattern"               
@@ -118,7 +106,7 @@ class TextualApp(App[None]):
         yield Footer()
 
     def on_mount(self):
-        self.set_interval(2, self.update_text)
+        self.set_interval(5, self.update_text)
 
     def update_text(self):
 
@@ -131,9 +119,7 @@ class TextualApp(App[None]):
             "Never gonna give you up, \nnever gonna let you down",
         ]
         static = self.query_one("#pattern_text", Static)
-        self.log(static)
         static.update(random.choice(phrases))
-
 
     def action_reverse(self):
         coloromatics = self.query(Coloromatic).results()
