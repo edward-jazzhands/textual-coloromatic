@@ -1,6 +1,6 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/caa188cb-848a-4465-9ab2-d3adc9b54fe9">
-  <img src="https://github.com/user-attachments/assets/86eb6be0-3e36-4030-ab72-cbacc6910345">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/939446b8-5257-4e2c-b0d9-338cfa4973e5">
+  <img src="https://github.com/user-attachments/assets/ce8e2acb-fbba-4c63-8e50-c361d909c6ae">
 </picture>
 
 # textual-coloromatic
