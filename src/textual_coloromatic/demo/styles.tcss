@@ -18,6 +18,7 @@ Screen {layout: horizontal;}
             border: tall $primary; 
             padding: 0 1;
             background: $surface;
+            # dock: right;    /* any of these can be used to position it */
             # offset-x: 10;
             # offset-y: 3;
         }

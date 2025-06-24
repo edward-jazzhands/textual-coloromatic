@@ -43,7 +43,7 @@ class BottomBar(Horizontal):
 
         art_pkg_path = Path(next(iter(getattr(textual_coloromatic.demo.demo_art, "__path__"))))
         self.coloromatic.art_loader.add_directory(art_pkg_path)
-        self.file_dict: dict[str, list[Path]] = self.coloromatic.art_loader.file_dict
+        self.file_dict: dict[str, list[Path]] = self.coloromatic.file_dict
         """String (key) is the directory name. The value is a list of path objects for each .txt file
         in that directory."""
 

@@ -10,13 +10,13 @@ run:
 run-dev:
 	uv run textual run --dev textual_coloromatic.demo:ColoromaticDemo
 
-# Run the small example script
-run-ex:
-	uv run examples/example1.py
+# Run an example script, by number (ie. just run-ex 1)
+run-ex num:
+	uv run examples/example{{num}}.py
 
-# Run the small example script in dev mode
-run-ex-dev:
-	uv run textual run --dev examples/example1.py	
+# Run an example script in dev mode, by number (ie. just run-ex-dev 1)
+run-ex-dev num:
+	uv run textual run --dev examples/example{{num}}.py	
 
 # Run the console
 console:
