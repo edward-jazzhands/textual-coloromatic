@@ -3,14 +3,14 @@
   <img src="https://github.com/user-attachments/assets/ce8e2acb-fbba-4c63-8e50-c361d909c6ae">
 </picture>
 
-# textual-coloromatic
+# Textual-Color-O-Matic
 
-![badge](https://img.shields.io/badge/Linted-Ruff-blue&logo=ruff)
-![badge](https://img.shields.io/badge/Formatted-Black-black)
-![badge](https://img.shields.io/badge/Type_checked-MyPy-blue&logo=python)
-![badge](https://img.shields.io/badge/Type_checked-Pyright-blue&logo=python)
-![badge](https://img.shields.io/badge/License-MIT-blue)
-[![Framework: Textual](https://img.shields.io/badge/framework-Textual-5967FF?logo=python)](https://www.textualize.io/)
+![badge](https://img.shields.io/badge/linted-Ruff-blue?style=for-the-badge&logo=ruff)
+![badge](https://img.shields.io/badge/formatted-black-black?style=for-the-badge)
+![badge](https://img.shields.io/badge/type_checked-MyPy_(strict)-blue?style=for-the-badge&logo=python)
+![badge](https://img.shields.io/badge/Type_checked-Pyright_(strict)-blue?style=for-the-badge&logo=python)
+![badge](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
+![badge](https://img.shields.io/badge/framework-Textual-blue?style=for-the-badge)
 
 Textual-Color-O-Matic is a [Textual](https://github.com/Textualize/textual) library for color animations and tiling effects.
 
@@ -44,12 +44,12 @@ pipx run textual-coloromatic
 
 ## Documentation
 
-### [Click here for documentation](https://edward-jazzhands.github.io/libraries/textual-coloromatic/)
+### [Click here for documentation](https://edward-jazzhands.github.io/libraries/textual-coloromatic/docs/)
 
 ## Video
 
 https://github.com/user-attachments/assets/863114a0-1cad-4b1e-bfeb-ed04736c4bce
 
-## Questions, issues, suggestions?
+## Questions, Issues, Suggestions?
 
-Feel free to post an issue.
+Use the [issues](https://github.com/edward-jazzhands/textual-coloromatic/issues) section for bugs or problems, and post ideas or feature requests on the [TTY group discussion board](https://github.com/orgs/ttygroup/discussions).

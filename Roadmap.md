@@ -1,6 +1,8 @@
 # Features Roadmap
 
 [ ] Add auto-suggestions for colors in color screen
+[ ] Add constructor argument for additional art directories
+[ ] Create mode for stretching gradients
 [X] Add method to add custom directories for art files
 [X] Also add some help to color screen
 [X] Add built-in pattern picker to Coloromatic class
