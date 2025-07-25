@@ -1,4 +1,4 @@
-<picture>
+<picture hidden>
   <!-- The classes are used on the MKDocs website -->
   <source
     media="(prefers-color-scheme: dark)"
