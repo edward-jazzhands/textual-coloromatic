@@ -1,7 +1,12 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/939446b8-5257-4e2c-b0d9-338cfa4973e5">
-  <img src="https://github.com/user-attachments/assets/ce8e2acb-fbba-4c63-8e50-c361d909c6ae">
+<!-- GitHub prefers-color-scheme method -->
+<picture class="only-github">
+  <source media="(prefers-color-scheme: dark)" srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif">
+  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif">
 </picture>
+
+<!-- MkDocs Material theme-aware images -->
+<img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif" class="only-mkdocs only-dark">
+<img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" class="only-mkdocs only-light">
 
 # Textual-Color-O-Matic
 
@@ -48,7 +53,16 @@ pipx run textual-coloromatic
 
 ## Video
 
-https://github.com/user-attachments/assets/863114a0-1cad-4b1e-bfeb-ed04736c4bce
+https://edward-jazzhands.github.io/assets/textual-coloromatic/demo-0.2.1-handbrake.mp4
+
+## Video
+
+<video style="width: 100%; height: auto;" controls loop>
+  <source src="https://edward-jazzhands.github.io/assets/textual-coloromatic/demo-0.2.1-handbrake.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+[ ](https://edward-jazzhands.github.io/assets/textual-coloromatic/demo-0.2.1-handbrake.mp4)
 
 ## Questions, Issues, Suggestions?
 
