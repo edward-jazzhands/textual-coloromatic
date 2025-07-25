@@ -1,8 +1,16 @@
 <!-- GitHub prefers-color-scheme method -->
 <picture class="only-github">
   <source media="(prefers-color-scheme: dark)" srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif">
-  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif">
+  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" alt="Banner">
 </picture>
+
+<!-- MkDocs uses its own color scheme -->
+<span hidden class="light-mode-container">
+  <img class="light-mode" src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" alt="Banner for light theme">
+</span>
+<span hidden class="dark-mode-container">
+  <img class="dark-mode" src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif" alt="Banner for dark theme">
+</span>
 
 # Textual-Color-O-Matic
 
