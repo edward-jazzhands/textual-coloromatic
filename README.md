@@ -5,10 +5,11 @@
 </picture>
 
 <!-- MkDocs Material theme-aware images -->
-<template class="mkdocs-template">
+<details class="mkdocs-only">
+  <summary></summary>
   <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif" class="only-mkdocs only-dark">
   <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" class="only-mkdocs only-light">
-</template>
+</details>
 
 # Textual-Color-O-Matic
 
