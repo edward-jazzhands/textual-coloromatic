@@ -5,8 +5,10 @@
 </picture>
 
 <!-- MkDocs Material theme-aware images -->
-<img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif" class="only-mkdocs only-dark">
-<img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" class="only-mkdocs only-light">
+<div>
+  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif" class="only-mkdocs only-dark">
+  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" class="only-mkdocs only-light">
+</div>
 
 # Textual-Color-O-Matic
 
