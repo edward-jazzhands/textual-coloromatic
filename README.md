@@ -5,7 +5,7 @@
 </picture>
 
 <!-- MkDocs Material theme-aware images -->
-<details class="mkdocs-only">
+<details style="all: unset; display: contents;" open>
   <summary></summary>
   <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif" class="only-mkdocs only-dark">
   <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" class="only-mkdocs only-light">
