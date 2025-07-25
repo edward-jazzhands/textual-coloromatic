@@ -6,12 +6,12 @@
 
 # Textual-Color-O-Matic
 
-![badge](https://img.shields.io/badge/linted-Ruff-blue?style=for-the-badge&logo=ruff)
-![badge](https://img.shields.io/badge/formatted-black-black?style=for-the-badge)
-![badge](https://img.shields.io/badge/type_checked-MyPy_(strict)-blue?style=for-the-badge&logo=python)
-![badge](https://img.shields.io/badge/Type_checked-Pyright_(strict)-blue?style=for-the-badge&logo=python)
-![badge](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
-![badge](https://img.shields.io/badge/framework-Textual-blue?style=for-the-badge)
+<img src="https://img.shields.io/badge/linted-Ruff-blue?style=for-the-badge&logo=ruff">
+<img src="https://img.shields.io/badge/formatted-black-black?style=for-the-badge">
+<img src="https://img.shields.io/badge/type_checked-MyPy_(strict)-blue?style=for-the-badge&logo=python">
+<img src="https://img.shields.io/badge/Type_checked-Pyright_(strict)-blue?style=for-the-badge&logo=python">
+<img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge">
+<img src="https://img.shields.io/badge/framework-Textual-blue?style=for-the-badge">
 
 Textual-Color-O-Matic is a [Textual](https://github.com/Textualize/textual) library for color animations and tiling effects.
 
