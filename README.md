@@ -1,16 +1,21 @@
-<!-- GitHub prefers-color-scheme method -->
-<picture class="only-github">
-  <source media="(prefers-color-scheme: dark)" srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif">
-  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" alt="Banner">
+<picture>
+  <!-- The classes are used on the MKDocs website -->
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif"
+    class="banner-dark-mode"
+  >
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif"
+    class="banner-light-mode"
+  >
+  <!-- fallback for everything else (and also the default on GitHub pages) -->
+  <img
+    src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif"
+    alt="Textual Window banner"
+  >
 </picture>
-
-<!-- MkDocs uses its own color scheme -->
-<span hidden class="light-mode-container">
-  <img class="light-mode" src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" alt="Banner for light theme">
-</span>
-<span hidden class="dark-mode-container">
-  <img class="dark-mode" src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif" alt="Banner for dark theme">
-</span>
 
 # Textual-Color-O-Matic
 
