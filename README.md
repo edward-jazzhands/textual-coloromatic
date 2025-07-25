@@ -1,21 +1,5 @@
-<picture hidden>
-  <!-- The classes are used on the MKDocs website -->
-  <source
-    media="(prefers-color-scheme: dark)"
-    srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif"
-    class="banner-dark-mode"
-  >
-  <source
-    media="(prefers-color-scheme: light)"
-    srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif"
-    class="banner-light-mode"
-  >
-  <!-- fallback for everything else (and also the default on GitHub pages) -->
-  <img
-    src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif"
-    alt="Textual Window banner"
-  >
-</picture>
+![banner](https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif#only-light)
+![banner](https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif#only-dark)
 
 # Textual-Color-O-Matic
 
