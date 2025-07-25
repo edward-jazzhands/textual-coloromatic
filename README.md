@@ -33,7 +33,7 @@ or stopped in real-time.
 
 ## Demo App
 
-If you have uv or Pipx, you can immediately try the demo app:
+If you have [uv](https://docs.astral.sh/uv/) or [pipx](https://pipx.pypa.io/stable/), you can immediately try the demo app:
 
 ```sh
 uvx textual-coloromatic
@@ -49,14 +49,12 @@ pipx run textual-coloromatic
 
 ## Video
 
-## Video
-
 <video style="width: 100%; height: auto;" controls loop>
   <source src="https://edward-jazzhands.github.io/assets/textual-coloromatic/demo-0.2.1-handbrake.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
-[ ](https://edward-jazzhands.github.io/assets/textual-coloromatic/demo-0.2.1-handbrake.mp4)
+[ ]()
 
 ## Questions, Issues, Suggestions?
 
