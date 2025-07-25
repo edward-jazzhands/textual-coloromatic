@@ -1,8 +1,13 @@
-<!-- GitHub prefers-color-scheme method -->
 <picture class="only-github">
   <source media="(prefers-color-scheme: dark)" srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif">
-  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif">
+  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" alt="Textual Window banner">
 </picture>
+
+<!-- MKDOCS-START
+![banner](https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif#only-light)
+![banner](https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif#only-dark)
+MKDOCS-END -->
 
 # Textual-Color-O-Matic
 
