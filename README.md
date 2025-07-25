@@ -4,14 +4,6 @@
   <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif">
 </picture>
 
-<!-- MkDocs Material theme-aware images -->
-<details class="details">
-  <summary></summary>
-  These banners are for display on the docs website. If viewing on Github please ignore this.
-  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-dark-theme.gif" class="only-mkdocs only-dark">
-  <img src="https://edward-jazzhands.github.io/assets/textual-coloromatic/banner-light-theme.gif" class="only-mkdocs only-light">
-</details>
-
 # Textual-Color-O-Matic
 
 ![badge](https://img.shields.io/badge/linted-Ruff-blue?style=for-the-badge&logo=ruff)
@@ -56,8 +48,6 @@ pipx run textual-coloromatic
 ### [Click here for documentation](https://edward-jazzhands.github.io/libraries/textual-coloromatic/docs/)
 
 ## Video
-
-https://edward-jazzhands.github.io/assets/textual-coloromatic/demo-0.2.1-handbrake.mp4
 
 ## Video
 
