@@ -35,7 +35,7 @@ jobs:
           mkdir -p "$DEST_DIR"
 
           sed -i '/<!-- MKDOCS-START/d' README.md
-          sed -i '/<!-- MKDOCS-END/d' README.md
+          sed -i '/MKDOCS-END -->/d' README.md
 
           # Copy README as the library's main index page
           cp README.md "$DEST_DIR/index.md"
