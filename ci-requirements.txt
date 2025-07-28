@@ -1,0 +1,6 @@
+textual
+pyfiglet
+black
+ruff
+mypy
+basedpyright

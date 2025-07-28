@@ -11,12 +11,10 @@ MKDOCS-END -->
 
 # Textual-Color-O-Matic
 
-[![badge](https://img.shields.io/badge/linted-Ruff-blue?style=for-the-badge&logo=ruff)](https://astral.sh/ruff)
-[![badge](https://img.shields.io/badge/formatted-black-black?style=for-the-badge)](https://github.com/psf/black)
-[![badge](https://img.shields.io/badge/type_checked-MyPy_(strict)-blue?style=for-the-badge&logo=python)](https://mypy-lang.org/)
-[![badge](https://img.shields.io/badge/Type_checked-Pyright_(strict)-blue?style=for-the-badge&logo=python)](https://microsoft.github.io/pyright/)
-[![badge](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](https://opensource.org/license/mit)
-[![badge](https://img.shields.io/badge/framework-Textual-blue?style=for-the-badge)](https://textual.textualize.io/)
+[![badge](https://img.shields.io/github/v/release/edward-jazzhands/textual-coloromatic)](https://github.com/edward-jazzhands/textual-coloromatic/releases/latest)
+[![badge](https://img.shields.io/badge/Requires_Python->=3.9-blue&logo=python)](https://python.org)
+[![badge](https://img.shields.io/badge/Strictly_Typed-MyPy_&_Pyright-blue&logo=python)](https://mypy-lang.org/)
+[![badge](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit)
 
 Textual-Color-O-Matic is a [Textual](https://github.com/Textualize/textual) library for color animations and tiling effects.
 
@@ -59,7 +57,7 @@ pipx run textual-coloromatic
   Your browser does not support the video tag.
 </video>
 
-[ ](https://github.com/user-attachments/assets/1140fd13-526c-4bc8-b489-a6e59d9b5252)
+[](https://github.com/user-attachments/assets/1140fd13-526c-4bc8-b489-a6e59d9b5252)
 
 ## Questions, Issues, Suggestions?
 

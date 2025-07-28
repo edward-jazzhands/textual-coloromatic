@@ -23,16 +23,15 @@ from textual.widgets import (
     Input,
     Markdown,
     Button,
+    ListView,
     ListItem,
     TextArea,
 )
 
 
 # Local imports
-from textual_coloromatic.demo.custom_listview import CustomListView
 from textual_coloromatic.demo.datawidget import ActiveColors
 from textual_coloromatic.demo.validators import ColorValidator
-from textual_coloromatic.demo.custom_listview import Selected
 
 
 class HelpScreen(ModalScreen[None]):
@@ -91,7 +90,7 @@ class ColorScreen(ModalScreen[None]):
                 "Press F1 for help screen."
             )
             yield Input(id="colorscreen_input", validators=[ColorValidator(self.app.theme_variables)])
-            self.listview = CustomListView(id="colorscreen_list")
+            self.listview = ListView(id="colorscreen_list")
             yield self.listview
             with Horizontal(classes="screen_buttonbar"):
                 yield Button("Cancel", id="cancel")
@@ -127,8 +126,8 @@ class ColorScreen(ModalScreen[None]):
                 failures = event.validation_result.failure_descriptions
                 self.log(f"Invalid color input: {failures}")
 
-    @on(CustomListView.Selected)
-    def item_selected(self, event: Selected) -> None:
+    @on(ListView.Selected)
+    def item_selected(self, event: ListView.Selected) -> None:
 
         self.new_colors.pop(event.index)
         self.refresh_listview()

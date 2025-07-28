@@ -1,17 +1,17 @@
 [project]
 name = "textual-coloromatic"
-version = "0.2.2"
+version = "1.0.0"
 description = "A Textual widget for displaying ASCII art with color effects and animations."
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "textual>=3.4.0",
-    "textual-slidecontainer>=0.4.2",
+    "textual>=5.0.0",
+    "textual-slidecontainer>=0.6.0",
 ]
 license = { text = "MIT" }
 keywords = ["python", "textual", "tui", "ascii", "widget", "color", "coloromatic", "art"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
@@ -30,6 +30,7 @@ Changelog = "https://github.com/edward-jazzhands/textual-coloromatic/blob/master
 
 [dependency-groups]
 dev = [
+    "basedpyright>=1.31.0",
     "black>=25.1.0",
     "mypy>=1.16.0",
     "ruff>=0.11.13",
@@ -47,6 +48,10 @@ textual-coloromatic = "textual_coloromatic.demo:run_demo"
 line-length = 110
 
 [tool.mypy]
-python_version = "3.10"
 pretty = true
 strict = true
+
+[tool.basedpyright]
+include = ["src"]
+typeCheckingMode = "strict"
+

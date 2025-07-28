@@ -226,7 +226,7 @@ class SettingsWidget(VerticalScroll):
 
         if event.validation_result:
             if event.validation_result.is_valid:
-                self.log(f"Gradient quality set to: {event.value if event.value else "auto"}")
+                self.log(f"Gradient quality set to: {event.value if event.value else 'auto'}")
                 if event.value == "":
                     self.coloromatic.gradient_quality = "auto"
                 else:
@@ -271,7 +271,7 @@ class SettingsWidget(VerticalScroll):
 
         if event.validation_result:
             if event.validation_result.is_valid:
-                self.log(f"Coloromatic background set to: {event.value if event.value else "auto"}")
+                self.log(f"Coloromatic background set to: {event.value if event.value else 'auto'}")
                 if event.value == "":
                     self.coloromatic.styles.background = None
                 else:
