@@ -1,6 +1,29 @@
 # Textual-Color-O-Matic Changelog
 
-## 0.2.1 (2025-06-19)
+## [1.0.0] 2025-07-28
+
+### Usage / API changes
+
+- Promoted library to 1.0.0 / stable release.
+- Upgraded to Textual 5.0.0.
+
+### Code and project changes
+
+- Renamed Changelog.md to CHANGELOG.md
+- Added 2 workflow to .github/workflows:
+  - ci-checks.yml - runs Ruff, MyPy, BasedPyright (will add Pytest later)
+  - release.yml - Workflow to publish to PyPI and github releases
+- Added 2 scripts to .github/scripts:
+  - adds .github/scripts/validate_main.sh
+  - adds .github/scripts/tag_release.py
+- Added 1 new file to root: `ci-requirements.txt` - this is used by the ci-checks.yml workflow to install the dev dependencies.
+- Added basedpyright as a dev dependency to help with type checking. Made the `just typecheck` command run it after MyPy and set it to 'strict' mode in the config (added [tool.basedpyright] section to pyproject.toml).
+- Replaced build and publish commands in the justfile with a single release command that runs the two above scripts and then pushes the new tag to Github
+- Workflow `update-docs.yml` now runs only if the `release.yml` workflow is successful, so it will only update the docs if a new release is made (Still possible to manually run it if needed, should add a 'docs' tag in the future for this purpose).
+- Changed the `.python-version` file to use `3.9` instead of `3.12`.
+- Deleted the CustomListView class as it is no longer necessary in Textual 5.0.0. (Textual added indexing to the ListView class).
+
+## [0.2.1] (2025-06-19)
 
 - Removed the logging statements from Coloromatic (forgot to remove them)
 
