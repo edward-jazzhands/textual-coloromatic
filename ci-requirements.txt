@@ -1,4 +1,5 @@
 textual
+textual-slidecontainer
 pyfiglet
 black
 ruff
