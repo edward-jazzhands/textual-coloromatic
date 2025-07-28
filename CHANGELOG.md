@@ -23,7 +23,7 @@
 - Changed the `.python-version` file to use `3.9` instead of `3.12`.
 - Deleted the CustomListView class as it is no longer necessary in Textual 5.0.0. (Textual added indexing to the ListView class).
 
-## 0.2.1 (2025-06-19)
+## [0.2.1] (2025-06-19)
 
 - Removed the logging statements from Coloromatic (forgot to remove them)
 
