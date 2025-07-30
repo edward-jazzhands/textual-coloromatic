@@ -85,7 +85,7 @@ HelpScreen, ColorScreen, CustomStringScreen {
     align: center middle;
     & > .screen_container {
         width: 50%;
-        height: 50%;
+        height: 60%;
         min-width: 40;
         min-height: 20;
         background: $surface;
