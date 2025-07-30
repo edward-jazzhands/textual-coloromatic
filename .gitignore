@@ -5,7 +5,14 @@ build/
 dist/
 wheels/
 *.egg-info
-*_cache/
+
+# Textual stuff
+snapshot_report.html
 
 # Virtual environments
 .venv
+
+# tooling stuff
+*_cache/
+.nox/
+.crush

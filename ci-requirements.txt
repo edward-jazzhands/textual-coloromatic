@@ -1,7 +1,0 @@
-textual
-textual-slidecontainer
-pyfiglet
-black
-ruff
-mypy
-basedpyright

@@ -1,13 +1,9 @@
 [project]
 name = "textual-coloromatic"
-version = "1.0.0"
+version = "1.0.1"
 description = "A Textual widget for displaying ASCII art with color effects and animations."
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = [
-    "textual>=5.0.0",
-    "textual-slidecontainer>=0.6.0",
-]
 license = { text = "MIT" }
 keywords = ["python", "textual", "tui", "ascii", "widget", "color", "coloromatic", "art"]
 classifiers = [
@@ -22,20 +18,14 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
 ]
+dependencies = [
+    "textual>=3.0.0,<6.0.0",
+    "textual-slidecontainer>=1.0.0",
+]
 
 [project.urls]
 Repository = "https://github.com/edward-jazzhands/textual-coloromatic"
-Changelog = "https://github.com/edward-jazzhands/textual-coloromatic/blob/master/Changelog.md"
-
-
-[dependency-groups]
-dev = [
-    "basedpyright>=1.31.0",
-    "black>=25.1.0",
-    "mypy>=1.16.0",
-    "ruff>=0.11.13",
-    "textual-dev>=1.7.0",
-]
+Changelog = "https://github.com/edward-jazzhands/textual-coloromatic/blob/master/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling"]
@@ -43,6 +33,22 @@ build-backend = "hatchling.build"
 
 [project.scripts]
 textual-coloromatic = "textual_coloromatic.demo:run_demo"
+
+##########################
+# Dev Dependency Configs #
+##########################
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.31.0",
+    "black>=25.1.0",
+    "mypy>=1.16.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-textual-snapshot>=1.1.0",
+    "ruff>=0.11.13",
+    "textual-dev>=1.7.0",
+]
 
 [tool.black]
 line-length = 110
@@ -55,3 +61,5 @@ strict = true
 include = ["src"]
 typeCheckingMode = "strict"
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

@@ -214,6 +214,11 @@ class ColoromaticDemo(App[Any]):
     def action_show_help(self) -> None:
         self.push_screen(HelpScreen())
 
+    def create_test_pattern(self, color:bool = False) -> None:
+        self.query_one(Coloromatic).pattern = "weave"
+        if color:
+            self.query_one(Coloromatic).set_color_list(["red", "green", "blue"])
+
 
 def run_demo() -> None:
     """Run the demo app."""
