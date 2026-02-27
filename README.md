@@ -48,7 +48,7 @@ pipx run textual-coloromatic
 
 ## Documentation
 
-### [Click here for documentation](https://edward-jazzhands.github.io/libraries/textual-coloromatic/docs/)
+### [Click here for documentation](https://www.github.com/edward-jazzhands/textual-coloromatic/blob/main/docs/docs.md)
 
 ## Video
 
@@ -61,4 +61,4 @@ pipx run textual-coloromatic
 
 ## Questions, Issues, Suggestions?
 
-Use the [issues](https://github.com/edward-jazzhands/textual-coloromatic/issues) section for bugs or problems, and post ideas or feature requests on the [TTY group discussion board](https://github.com/orgs/ttygroup/discussions).
+Use the [issues](https://github.com/edward-jazzhands/textual-coloromatic/issues) section for bugs, issues, ideas or feature requests.
